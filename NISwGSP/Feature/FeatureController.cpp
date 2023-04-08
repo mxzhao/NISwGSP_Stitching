@@ -7,6 +7,9 @@
 //
 
 #include "FeatureController.h"
+#include <opencv2/opencv.hpp>
+
+using namespace cv;
 
 void FeatureDescriptor::addDescriptor(const cv::Mat & _descriptor) {
     data.emplace_back(_descriptor);
@@ -50,6 +53,24 @@ void FeatureController::detect(const cv::Mat & _grey_img,
         printError("F(detect) feature descriptors is not empty");
     }
 #endif
+#if 1
+	Ptr<SIFT> detector = SIFT::create(1000);
+	vector<KeyPoint> keypoints;
+    detector->detect(_grey_img, keypoints);
+    cv::Ptr<cv::SiftDescriptorExtractor> descriptor = cv::SiftDescriptorExtractor::create();
+    Mat dstSIFT;
+    descriptor->compute(_grey_img, keypoints, dstSIFT);
+    for (int i = 0; i < keypoints.size();i++)
+    {
+        _feature_points.emplace_back(keypoints[i].pt.x, keypoints[i].pt.y);
+        uchar* ptr = dstSIFT.ptr<unsigned char>(i);
+        cv::Mat descriptor_array(1, SIFT_DESCRIPTOR_DIM, CV_32FC1);
+        memcpy((char*)descriptor_array.data, ptr, SIFT_DESCRIPTOR_DIM * sizeof(float));
+        FeatureDescriptor descriptor;
+        descriptor.addDescriptor(descriptor_array);
+        _feature_descriptors.emplace_back(descriptor);
+    }
+#else
     cv::Mat grey_img_float = _grey_img.clone();
     grey_img_float.convertTo(grey_img_float, CV_32FC1);
 
@@ -81,4 +102,5 @@ void FeatureController::detect(const cv::Mat & _grey_img,
         } while (vl_sift_process_next_octave(vlSift) != VL_ERR_EOF);
     }
     vl_sift_delete(vlSift);
+#endif
 }

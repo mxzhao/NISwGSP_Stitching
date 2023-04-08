@@ -67,7 +67,7 @@ ImageData::ImageData(const string & _file_dir,
     
     assert(rgba_img.channels() >= 3);
     if(rgba_img.channels() == 3) {
-        cvtColor(rgba_img, rgba_img, CV_BGR2BGRA);
+        cvtColor(rgba_img, rgba_img, cv::COLOR_BGR2BGRA);
     }
     vector<cv::Mat> channels;
     split(rgba_img, channels);
@@ -76,9 +76,9 @@ ImageData::ImageData(const string & _file_dir,
 }
 
 const cv::Mat & ImageData::getGreyImage() const {
-    if(grey_img.empty()) {
-        cvtColor(img, grey_img, CV_BGR2GRAY);
-    }
+    //if(grey_img.empty()) {
+        cvtColor(img, grey_img, cv::COLOR_BGR2GRAY);
+    //} //zhaomx
     return grey_img;
 }
 

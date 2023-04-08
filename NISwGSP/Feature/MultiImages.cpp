@@ -811,7 +811,7 @@ vector<pair<int, int> > MultiImages::getFeaturePairsBySequentialRANSAC(const pai
     const int GLOBAL_MAX_ITERATION = log(1 - OPENCV_DEFAULT_CONFIDENCE) / log(1 - pow(GLOBAL_TRUE_PROBABILITY, HOMOGRAPHY_MODEL_MIN_POINTS));
     
     vector<char> final_mask(_initial_indices.size(), 0);
-    findHomography(_X, _Y, CV_RANSAC, parameter.global_homography_max_inliers_dist, final_mask, GLOBAL_MAX_ITERATION);
+    findHomography(_X, _Y, cv::RANSAC, parameter.global_homography_max_inliers_dist, final_mask, GLOBAL_MAX_ITERATION);
     
     vector<Point2> tmp_X = _X, tmp_Y = _Y;
     
@@ -825,7 +825,7 @@ vector<pair<int, int> > MultiImages::getFeaturePairsBySequentialRANSAC(const pai
         const int LOCAL_MAX_ITERATION = log(1 - OPENCV_DEFAULT_CONFIDENCE) / log(1 - pow(LOCAL_TRUE_PROBABILITY, HOMOGRAPHY_MODEL_MIN_POINTS));
         vector<Point2> next_X, next_Y;
         vector<char> mask(tmp_X.size(), 0);
-        findHomography(tmp_X, tmp_Y, CV_RANSAC, parameter.local_homogrpahy_max_inliers_dist, mask, LOCAL_MAX_ITERATION);
+        findHomography(tmp_X, tmp_Y, cv::RANSAC, parameter.local_homogrpahy_max_inliers_dist, mask, LOCAL_MAX_ITERATION);
 
         int inliers_count = 0;
         for(int i = 0; i < mask.size(); ++i) {
